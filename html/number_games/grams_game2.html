@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kg to Grams Conversion Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+           5px;
+            width: calc(100% - 22px);
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Kg to Grams Conversion Game</h1>
+        <p>Convert the given kilograms to grams:</p>
+        <div id="question"></div>
+        <input type="number" id="answer" placeholder="Enter grams">
+        <button onclick="checkAnswer()">Submit</button>
+        <div class="result" id="result"></div>
+        <div class="score" id="score">Score: 0</div>
+    </div>
+
+    <script>
+        let score = 0;
+
+        function generateQuestion() {
+            let kilograms = (Math.random() * 1).toFixed(2);
+            document.getElementById('question').innerText = `${kilograms} kg = ? grams`;
+            return kilograms;
+        }
+
+        let kilograms = generateQuestion();
+
+        function checkAnswer() {
+            let userAnswer = document.getElementById('answer').value;
+            let correctAnswer = (kilograms * 1000);
+            let result = document.getElementById('result');
+            let scoreDisplay = document.getElementById('score');
+
+            if (userAnswer == correctAnswer) {
+                result.innerText = "Correct! Well done!";
+                result.style.color = "green";
+                score++;
+            } else {
+                result.innerText = `Incorrect. The correct answer is ${correctAnswer} grams.`;
+                result.style.color = "red";
+            }
+
+            scoreDisplay.innerText = `Score: ${score}`;
+
+            // Generate a new question
+            kilograms = generateQuestion();
+            document.getElementById('answer').value = '';
+        }
+    </script>
+</body>
+</html>
