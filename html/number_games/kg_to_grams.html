@@ -27,7 +27,7 @@
             padding: 10px;
             margin: 10px;
             border: 1px solid #ccc;
-           5px;
+            border-radius: 5px;
             width: calc(100% - 22px);
         }
         button {
@@ -38,6 +38,7 @@
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #218838;
@@ -46,6 +47,11 @@
             margin-top: 20px;
         }
         .score {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .timer {
             margin-top: 20px;
             font-size: 1.2em;
             color: #333;
@@ -59,12 +65,16 @@
         <div id="question"></div>
         <input type="number" id="answer" placeholder="Enter grams">
         <button onclick="checkAnswer()">Submit</button>
-        <div class="result" id="result"></div>
+        <button onclick="resetGame()">Reset</button>
+        <div class="result" id="result">First answer starts timer!</div>
         <div class="score" id="score">Score: 0</div>
+        <div class="timer" id="timer">Time: 0 s</div>
     </div>
 
     <script>
         let score = 0;
+        let startTime;
+        let timerInterval;
 
         function generateQuestion() {
             let kilograms = (Math.random() * 1).toFixed(2);
@@ -74,16 +84,39 @@
 
         let kilograms = generateQuestion();
 
+        function startTimer() {
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            let currentTime = new Date();
+            let timeElapsed = Math.floor((currentTime - startTime) / 1000);
+            document.getElementById('timer').innerText = `Time: ${timeElapsed} s`;
+        }
+
         function checkAnswer() {
             let userAnswer = document.getElementById('answer').value;
             let correctAnswer = (kilograms * 1000);
             let result = document.getElementById('result');
             let scoreDisplay = document.getElementById('score');
 
-            if (userAnswer == correctAnswer) {
+            if (userAnswer.startsWith('0')) {
+                result.innerText = "Answer should not start with zero.";
+                result.style.color = "red";
+            } else if (userAnswer == correctAnswer) {
                 result.innerText = "Correct! Well done!";
                 result.style.color = "green";
                 score++;
+                if (score === 1) {
+                    startTimer();
+                }
+                if (score === 10) {
+                    clearInterval(timerInterval);
+                    result.innerText = `Congratulations! You got 10 correct answers in ${document.getElementById('timer').innerText.split(' ')[1]}.`;
+                    result.style.color = "blue";
+                    return;
+                }
             } else {
                 result.innerText = `Incorrect. The correct answer is ${correctAnswer} grams.`;
                 result.style.color = "red";
@@ -92,6 +125,16 @@
             scoreDisplay.innerText = `Score: ${score}`;
 
             // Generate a new question
+            kilograms = generateQuestion();
+            document.getElementById('answer').value = '';
+        }
+
+        function resetGame() {
+            clearInterval(timerInterval);
+            score = 0;
+            document.getElementById('score').innerText = `Score: ${score}`;
+            document.getElementById('timer').innerText = `Time: 0 s`;
+            document.getElementById('result').innerText = 'First answer starts timer!';
             kilograms = generateQuestion();
             document.getElementById('answer').value = '';
         }
